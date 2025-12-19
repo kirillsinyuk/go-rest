@@ -23,6 +23,7 @@ func (event Event) Save() error {
 	}
 	id, err := result.LastInsertId()
 	event.ID = id
+
 	return err
 }
 
@@ -42,5 +43,19 @@ func GetAllEvents() ([]Event, error) {
 		}
 		events = append(events, event)
 	}
+
 	return events, nil
+}
+
+func GetEventById(id int64) (*Event, error) {
+	selectById := `SELECT * FROM events WHERE ID = ?`
+	row := db.DB.QueryRow(selectById, id)
+
+	var event Event
+	err := row.Scan(&event.ID, &event.Name, &event.Location, &event.DateTime, &event.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &event, nil
 }
