@@ -15,9 +15,8 @@ type Event struct {
 }
 
 func (event Event) Save() error {
-	insert := `INSERT INTO events (id, name, location, date_time, user_id)
-	VALUES(?, ?, ?, ?, ?)`
-	result, err := db.DB.Exec(insert, event.ID, event.Name, event.Location, event.DateTime, event.UserId)
+	insert := `INSERT INTO events (id, name, description, location, date_time, user_id) VALUES(?, ?, ?, ?, ?, ?)`
+	result, err := db.DB.Exec(insert, event.ID, event.Name, event.Description, event.Location, event.DateTime, event.UserId)
 	if err != nil {
 		return err
 	}
@@ -37,7 +36,7 @@ func GetAllEvents() ([]Event, error) {
 	events := make([]Event, 0)
 	for rows.Next() {
 		var event Event
-		err := rows.Scan(&event.ID, &event.Name, &event.Location, &event.DateTime, &event.UserId)
+		err := rows.Scan(&event.ID, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserId)
 		if err != nil {
 			return nil, err
 		}
@@ -47,12 +46,11 @@ func GetAllEvents() ([]Event, error) {
 	return events, nil
 }
 
-func GetEventById(id int64) (*Event, error) {
-	selectById := `SELECT * FROM events WHERE ID = ?`
-	row := db.DB.QueryRow(selectById, id)
+func GetEventById(ID int64) (*Event, error) {
+	row := db.DB.QueryRow("SELECT * FROM events WHERE id = ?", ID)
 
 	var event Event
-	err := row.Scan(&event.ID, &event.Name, &event.Location, &event.DateTime, &event.UserId)
+	err := row.Scan(&event.ID, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserId)
 	if err != nil {
 		return nil, err
 	}

@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS events (
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL,
     location VARCHAR(255) NOT NULL,
-    dateTime DATETIME NOT NULL,
-    userId INTEGER
+    date_time DATETIME NOT NULL,
+    user_id INTEGER
 )`
 	_, err := DB.Exec(createEventTable)
 	if err != nil {
