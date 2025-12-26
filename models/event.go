@@ -11,11 +11,11 @@ type Event struct {
 	Description string    `binding:"required"`
 	Location    string    `binding:"required"`
 	DateTime    time.Time `binding:"required"`
-	UserId      int
+	UserId      int64
 }
 
 func (event *Event) Save() error {
-	insert := `INSERT INTO events (name, description, location, date_time, user_id) VALUES(?, ?, ?, ?, ?)`
+	insert := "INSERT INTO event (name, description, location, date_time, user_id) VALUES(?, ?, ?, ?, ?)"
 	result, err := db.DB.Exec(insert, event.Name, event.Description, event.Location, event.DateTime, event.UserId)
 	if err != nil {
 		return err
@@ -27,24 +27,21 @@ func (event *Event) Save() error {
 }
 
 func (event *Event) Update() error {
-	insert := `UPDATE events SET name = ?, description = ?, location = ?, date_time = ?, user_id = ? WHERE id = ?`
+	insert := "UPDATE event SET name = ?, description = ?, location = ?, date_time = ?, user_id = ? WHERE id = ?"
 	_, err := db.DB.Exec(insert, event.Name, event.Description, event.Location, event.DateTime, event.UserId, event.ID)
 
 	return err
 }
 
 func DeleteById(ID int64) error {
-	delete := `DELETE FROM events WHERE id = ?`
+	delete := "DELETE FROM event WHERE id = ?"
 	_, err := db.DB.Exec(delete, ID)
-	if err != nil {
-		return err
-	}
 
-	return nil
+	return err
 }
 
 func GetAllEvents() ([]Event, error) {
-	selectAll := `SELECT * FROM events`
+	selectAll := "SELECT * FROM event"
 	rows, err := db.DB.Query(selectAll)
 	if err != nil {
 		return nil, err
@@ -64,7 +61,7 @@ func GetAllEvents() ([]Event, error) {
 }
 
 func GetEventById(ID int64) (*Event, error) {
-	row := db.DB.QueryRow("SELECT * FROM events WHERE id = ?", ID)
+	row := db.DB.QueryRow("SELECT * FROM event WHERE id = ?", ID)
 
 	var event Event
 	err := row.Scan(&event.ID, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserId)
